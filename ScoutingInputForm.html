@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Scouting Input Form </title>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+	<script type="text/javascript" src="ScoutingInputScripts.js"></script>
+	<style>
+		input[type=number] {
+			max-width: 40px;
+		}
+		body {
+			font-family: sans-serif;
+			font-size: 14px;
+		}
+		.titleArea, .autoArea, .teleArea, .endingArea {
+			margin-bottom: 10px;
+			margin-top: 10px;
+		}
+		div {
+			margin: 0px;
+			padding: 0px;
+			/*border: 1px solid black;*/
+		}
+		#inputForm {
+			width: 660px;
+		}
+		.title {
+			font-size: 24px;
+			font-weight: bold;
+		}
+		.inputBlock {
+			width: 326px;
+			display: inline-block;
+		}
+		.left {
+			float: left;
+		}
+		.right {
+			float: right;
+		}
+		.clearfix:after {
+			visibility: hidden;
+			display: block;
+			font-size: 0;
+			content: " ";
+			clear: both;
+			height: 0;
+		}
+		* html .clearfix             { zoom: 1; } /* IE6 */
+		*:first-child+html .clearfix { zoom: 1; } /* IE7 */
+		.wide {
+			width: auto;
+		}
+		h3 {
+			margin: 0px;
+		}
+	</style>
+</head>
+<body>
+	<a href="index.html">Home</a> <a href="GetTeam.html">Get Data</a> <a href="GetAverage.html">Average Data</a>
+	<br />
+	<form name="Scouting Input" id="inputForm" action="ScoutingInput.php" method=post>
+		<div class="titleArea">
+			<div class="title">Match Info</div>
+			<div class="inputBlock wide">
+				<select name="matchType" id="matchType" onchange="checkMatchType()">
+					<option value="Qualifications" selected>Qualifications</option>
+					<option value="Quarterfinals">Quarterfinals</option>
+					<option value="Semifinals">Semifinals</option>
+					<option value="Finals">Finals</option>
+					<option value="Practice">Practice</option>
+					<option value="Other">Other</option>
+				</select>
+				<input type="number" name="elimNo" id="elimNo" min=1 max=4 style="display: none">
+				<label for="matchNo" id="matchNoLabel">Match</label>
+				<input type="number" name="matchNo" id="matchNo" min=1 max=99>
+				<br />
+				<label for="teamNo" id="teamNoLabel">Team</label>
+				<input type="number" name="teamNo" id="teamNo" min=1 max=9999 style="max-width: 54px;">
+			</div>
+		</div>
+		<div class="autoArea clearfix">
+			<div class="title">Autonomous</div>
+			<div class="inputBlock left">
+				<h3>Robot</h3>
+				<input type="checkbox" name="autoRobotMoved" id="autoRobotMoved">
+				<label for="autoRobotMoved" id="autoRobotMovedLabel">Robot moved</label>
+				<br />
+				<input type="number" name="autoTotesMoved" id="autoTotesMoved" min=0 max=9>
+				<label for="autoTotesMoved" id="autoTotesMovedLabel">Totes moved</label>
+				<br />
+				<input type="number" name="autoContainersMoved" id="autoContainersMoved" min=0 max=7>
+				<label for="autoContainersMoved" id="autoContainersMovedLabel">Containers moved</label>
+				<br />
+				<input type="checkbox" name="autoToteStack" id="autoToteStack">
+				<label for="autoToteStack" id="autoToteStackLabel">Tote Stack</label>
+			</div>
+			<div class="inputBlock right clearfix">
+				<h3>Robot's Alliance</h3>
+				<input type="checkbox" name="allianceRobotSet" id="allianceRobotSet">
+				<label for="allianceRobotSet" id="allianceRobotSetLabel">Robot Set</label>
+				<br />
+				<input type="checkbox" name="allianceContainerSet" id="allianceContainerSet">
+				<label for="allianceContainerSet" id="allianceContainerSetLabel">Container Set</label>
+				<br />
+				<input type="radio" name="allianceToteSet" id="allianceToteSet" value="Set">
+				<label for="allianceToteSet" id="allianceToteSetLabel">Tote Set</label>
+				<input type="radio" name="allianceToteSet" id="allianceToteStack" value="Stack">
+				<label for="allianceToteStack" id="allianceToteStackLabel">Stacked Tote Set</label>
+				<input type="radio" name="allianceToteSet" id="noAllianceToteSet" value="None" checked>
+				<label for="noAllianceToteSet" id="noAllianceToteSetLabel">None</label>
+			</div>
+		</div>
+		<div class="teleArea clearfix">
+			<div class="title">Teleop</div>
+			<div class="inputBlock left">
+				<input type="number" name="teleTotesStacked" id="teleTotesStacked" min=0 max=99 oninput="checkTotesStacked()">
+				<label for="teleTotesStacked" id="teleTotesStackedLabel">Totes stacked</label>
+				<label for="teleLargestToteStack" id="teleLargestToteStackLabel" style="display: none">highest stack:</label>
+				<input type="number" name="teleLargestToteStack" id="teleLargestToteStack" min=0 max=6 oninput="checkTotesStacked()" style="display: none; max-width: 26px">
+				<br />
+				<input type="number" name="teleToteStacks" id="teleToteStacks" min=0 max=12 oninput="checkTotesStacked()">
+				<label for="teleToteStacks" id="teleToteStacksLabel">Tote stacks</label>
+				<br id="teleToteStacksNewline" />
+				<input type="number" name="teleContainersPlaced" id="teleContainersPlaced" min=0 max=7 oninput="checkContainersPlaced()">
+				<label for="teleContainersPlaced" id="teleContainersPlacedLabel">Containers stacked</label>
+				<label for="teleHighestContainerPlaced" id="teleHighestContainerPlacedLabel" style="display: none">highest:</label>
+				<input type="number" name="teleHighestContainerPlaced" id="teleHighestContainerPlaced" min=1 max=6 style="display: none; max-width: 26px">
+				<br id="containersPlacedNewline"/>
+				<input type="number" name="teleContainersTakenFromStep" id="teleContainersTakenFromStep" min=0 max=4 oninput="checkNoodles('Container')" onchange="checkBounds(this)">
+				<label for="teleContainersTakenFromStep" id="teleContainersTakenFromStepLabel">Containers taken from step</label>
+			</div>
+			<div class="inputBlock right">
+				<input type="number" name="teleNoodlesInContainers" id="teleNoodlesInContainers" min=0 max=3 onchange="checkNoodles('Container')">
+				<label for="teleNoodlesInContainers" id="teleNoodlesInContainersLabel">Noodles placed in Containers</label>
+				<br />
+				<input type="number" name="teleNoodlesInLandfill" id="teleNoodlesInLandfill" min=0 max=20 onchange="checkNoodles('Landfill')">
+				<label for="teleNoodlesInLandfill" id="teleNoodlesInLandfillLabel">Noodles in landfill</label>
+				<br />
+				<input type="number" name="teleNoodlesThrown" id="teleNoodlesThrown" min=0 max=10 onchange="checkNoodles('Thrown')">
+				<label for="teleNoodlesThrown" id="teleNoodlesThrownLabel">Noodles thrown</label>
+				<br />
+				<input type="number" name="coopTotesPlaced" id="coopTotesPlaced" min=0 max=6 oninput="checkCoopTotes()" style="max-width: 26px">
+				<label for="coopTotesPlaced" id="coopTotesPlacedLabel">Coopertition totes placed</label>
+				<label for="coopTotesStacked" id="coopTotesStackedLabel" style="display: none">highest:</label>
+				<input type="number" name="coopTotesStacked" id="coopTotesStacked" min=0 max=6 oninput="checkCoopTotes()" style="display: none; max-width: 26px">
+				</div>
+			<div class="inputBlock wide">
+				<input type="radio" name="coopToteSet" id="coopToteSet" value="Set">
+				<label for="coopToteSet" name="coopToteSetLabel">Coopertition tote set</label>
+				<input type="radio" name="coopToteSet" id="coopToteStack" value="Stack">
+				<label for="coopToteStack" name="coopToteStackLabel">Coopertition tote stack</label>
+				<input type="radio" name="coopToteSet" id="noCoopToteSet" value="None" checked>
+				<label for="noCoopToteSet" name="noCoopToteSetLabel">None</label>
+			</div>
+		</div>
+		<div class="endingArea clearfix">
+			<div class="inputBlock wide">
+				<label for="totalScore" id="totalScoreLabel">Total Score:</label>
+				<input type="number" name="totalScore" id="totalScore" min=0 max=999>
+				<br />
+				<label for="notes" id="notesLabel">Notes<br /></label>
+				<textarea type="textarea" name="notes" id="notes" rows=2 cols=60></textarea>
+			</div>
+		</div>
+		<!--<input type="submit" name="submit" value="Submit">-->
+		<input type="button" onclick="submitWithAJAX()" value="Submit"><br />
+		<div class="inputBlock wide" id="success"></div><br /><br />
+		<div class="inputBlock wide" style="font-size: 8px" id="output"></div>
+	</form>
+</body>
+</html>
