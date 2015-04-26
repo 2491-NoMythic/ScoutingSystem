@@ -44,6 +44,11 @@ autoAdd("autoContainersMoved");
 autoAdd("autoToteStack");
 autoAdd("allianceRobotSet");
 autoAdd("allianceContainerSet");
+autoAdd("binA");
+autoAdd("binB");
+autoAdd("binC");
+autoAdd("binD");
+
 $allianceToteSet = $sql->escape_string($_POST["allianceToteSet"]);
 if ($allianceToteSet == "Set") {
 	addValue("on", "allianceToteSet");
@@ -76,6 +81,12 @@ elseif ($coopToteSet == "Stack") {
 # Add other info
 autoAdd("totalScore");
 autoAdd("notes");
+autoAdd("frontLeft");
+autoAdd("frontRight");
+autoAdd("backLeft");
+autoAdd("backRight");
+
+
 
 insertValues();
 
@@ -125,6 +136,10 @@ function addTableIfNeeded($teamNo) {
 			allianceContainerSet boolean DEFAULT FALSE,
 			allianceToteSet boolean DEFAULT FALSE,
 			allianceToteStack boolean DEFAULT FALSE,
+			binA boolean DEFAULT FALSE,
+			binB boolean DEFAULT FALSE,
+			binC boolean DEFAULT FALSE,
+			binD boolean DEFAULT FALSE,
 			teleTotesStacked tinyint unsigned,
 			teleToteStacks tinyint unsigned,
 			teleLargestToteStack tinyint unsigned,
@@ -138,6 +153,10 @@ function addTableIfNeeded($teamNo) {
 			coopTotesStacked tinyint unsigned,
 			coopToteSet boolean DEFAULT FALSE,
 			coopToteStack boolean DEFAULT FALSE,
+			frontLeft boolean DEFAULT FALSE,
+			frontRight boolean DEFAULT FALSE,
+			backLeft boolean DEFAULT FALSE,
+			backRight boolean DEFAULT FALSE,
 			totalScore smallint unsigned,
 			notes text
 		)";

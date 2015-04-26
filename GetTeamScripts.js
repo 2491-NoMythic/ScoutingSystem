@@ -219,6 +219,10 @@ function makeRow(team) {
 	row.appendChild(makeNumberCell(team.autoTotesMoved, 3));
 	row.appendChild(makeNumberCell(team.autoContainersMoved, 2));
 	row.appendChild(makeBooleanCell(team.autoToteStack));
+	row.appendChild(makeBooleanCell(team.binA));
+	row.appendChild(makeBooleanCell(team.binB));
+	row.appendChild(makeBooleanCell(team.binC));
+	row.appendChild(makeBooleanCell(team.binD));
 	row.appendChild(makeBooleanCell(team.allianceRobotSet));
 	row.appendChild(makeBooleanCell(team.allianceContainerSet));
 	row.appendChild(makeStackSetCell(team.allianceToteSet, team.allianceToteStack));
@@ -234,6 +238,10 @@ function makeRow(team) {
 	row.appendChild(makeNumberCell(team.coopTotesPlaced, 3));
 	row.appendChild(makeNumberCell(team.coopTotesStacked, 4));
 	row.appendChild(makeStackSetCell(team.coopToteSet, team.coopToteStack));
+	row.appendChild(makeBooleanCell(team.frontLeft));	
+	row.appendChild(makeBooleanCell(team.frontRight));
+	row.appendChild(makeBooleanCell(team.backLeft));
+	row.appendChild(makeBooleanCell(team.backRight));	
 	row.appendChild(makeNumberCell(team.totalScore));
 	if (document.getElementById("showNotes").checked) {
 		var notes = makeCell(team.notes);

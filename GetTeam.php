@@ -18,7 +18,7 @@ $fields = Array("matchType","elimNumber", "matchNumber", "teamNumber",
 	"teleTotesStacked", "teleToteStacks", "teleLargestToteStack", "teleContainersPlaced",
 	"teleHighestContainerPlaced", "teleContainersTakenFromStep", "teleNoodlesInContainers",
 	"teleNoodlesInLandfill", "teleNoodlesThrown", "coopTotesPlaced", "coopTotesStacked",
-	"coopToteSet", "coopToteStack", "totalScore", "notes");
+	"coopToteSet", "coopToteStack", "frontLeft", "frontRight", "backLeft", "backRight", "totalScore", "notes", "binA", "binB", "binC", "binD");
 
 $select = "";
 

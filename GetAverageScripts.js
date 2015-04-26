@@ -207,6 +207,10 @@ function makeRow(team) {
 	row.appendChild(makeNumberCell(team.autoContainersMoved, 2));
 	row.appendChild(makePercentageCell(team.autoToteStack));
 	row.appendChild(makePercentageCell(team.allianceRobotSet));
+	row.appendChild(makePercentageCell(team.binA));
+	row.appendChild(makePercentageCell(team.binB));
+	row.appendChild(makePercentageCell(team.binC));
+	row.appendChild(makePercentageCell(team.binD));	
 	row.appendChild(makePercentageCell(team.allianceContainerSet));
 	row.appendChild(makePercentageCell(team.allianceToteSet));
 	row.appendChild(makePercentageCell(team.allianceToteStack));
@@ -223,6 +227,10 @@ function makeRow(team) {
 	row.appendChild(makeNumberCell(team.coopTotesStacked, 4));
 	row.appendChild(makePercentageCell(team.coopToteSet));
 	row.appendChild(makePercentageCell(team.coopToteStack));
+	row.appendChild(makePercentageCell(team.frontLeft));
+	row.appendChild(makePercentageCell(team.frontRight));
+	row.appendChild(makePercentageCell(team.backLeft));
+	row.appendChild(makePercentageCell(team.backRight));	
 	row.appendChild(makeNumberCell(team.totalScore, 100));
 	return row;
 }
