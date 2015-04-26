@@ -69,7 +69,7 @@ function checkMatchType() {
 		elimNoInput.value = "";
 	}
 	if (matchType == "Qualifications" || matchType == "Other" || matchType == "Practice") {
-		matchNoInput.max = 99;
+		matchNoInput.max = 999;
 	}
 	else {
 		matchNoInput.max = 3;
@@ -102,7 +102,7 @@ function checkTotesStacked() {
 	}
 
 	if (numStacksInput.value < 7) {
-		containersPlacedInput.max = Number(numStacksInput.value);
+		//containersPlacedInput.max = Number(numStacksInput.value);
 	}
 	else {
 		containersPlacedInput.max = 7;
@@ -134,8 +134,6 @@ function checkNoodles(lastChanged) {
 	var landfill = landfillInput.value * 1;
 	var thrownInput = form.elements["teleNoodlesThrown"];
 	var thrown = thrownInput.value * 1;
-	containersInput.max = containersTaken + 3;
-	if (containers > containersInput.max) {containersInput.value = containersInput.max;}
 	var minAllianceNoodlesInLandfill = landfill - 10;
 	if (minAllianceNoodlesInLandfill < 0) {minAllianceNoodlesInLandfill = 0;}
 	var noodlesUsed = containers + minAllianceNoodlesInLandfill + thrown;
