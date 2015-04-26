@@ -121,10 +121,18 @@ function makeCell(text, color) {
 
 function makeNumberCell(number, max) {
 	if (number) {
-		return makeCell(number, getColor(number, max));
+		if (number * 100 % 1 == 0) {
+			return makeCell(number, getColor(number, max));
+		}
+		else {
+			return makeCell(number.toFixed(2), getColor(number, max));
+		}
+	}
+	else if (number != null && number != undefined) {
+		return makeCell("0", getColor(0));
 	}
 	else {
-		return(makeCell(number))
+		return makeCell(number);
 	}
 }
 
@@ -196,7 +204,10 @@ function getColor(number, max) {
 }
 
 function makePercentageCell(value) {
-	return makeCell(value * 100 + "%", getColor(value, 1.0));
+	if (value * 100 % 1 == 0) {
+		return makeCell(value * 100 + "%", getColor(value, 1));
+	}
+	return makeCell((value * 100).toFixed(1) + "%", getColor(value, 1.0));
 }
 
 function makeRow(team) {
