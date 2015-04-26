@@ -1,12 +1,17 @@
 var form
 var xmlhttp;
+var queue_xmlhttp
+var lastRequest;
+var queue = [];
 if (window.XMLHttpRequest) {
 	// code for IE7+, Firefox, Chrome, Opera, Safari
 	xmlhttp = new XMLHttpRequest();
+	queue_xmlhttp = new XMLHttpRequest();
 }
 else {
 	// code for IE6, IE5
 	xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	queue_xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 }
 
 window.onload = function() {
@@ -213,11 +218,61 @@ function verifyForm() {
 
 xmlhttp.onreadystatechange = function() {
 	if(xmlhttp.readyState == 4){
-		document.getElementById("success").innerHTML = "Success!";
-		setTimeout(function() {
-			document.getElementById("success").innerHTML = "";
-		}, 2000);
-		document.getElementById("output").innerHTML = "Last SQL Query: " + xmlhttp.responseText;
+		if (xmlhttp.responseText) {
+			document.getElementById("success").innerHTML = "Success!";
+			setTimeout(function() {
+				document.getElementById("success").innerHTML = "";
+			}, 2000);
+			document.getElementById("output").innerHTML = "Last SQL Query: " + xmlhttp.responseText;
+		}
+		else {
+			if (queue.length == 0) {
+				queue.push(lastRequest);
+			}
+			else {
+				queue.push(lastRequest);
+				setTimeout(function() {
+					submitQueue(true);
+				}, 10000);
+			}
+			document.getElementById("success").innerHTML = "Couldn't find server, queued requests: " + queue.length;
+		}
+	}
+}
+
+function submitQueue(retry) {
+	if (queue.length > 0) {
+		if (retry) {
+			document.getElementById("success").innerHTML = "Retrying...";
+		}
+		queue_xmlhttp.open("POST","ScoutingInput.php",true);
+		queue_xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		queue_xmlhttp.send(queue[0]);
+	}
+}
+
+queue_xmlhttp.onreadystatechange = function() {
+	if (queue_xmlhttp.readyState == 4) {
+		if (queue_xmlhttp.responseText) {
+			queue.shift();
+			document.getElementById("output").innerHTML = "Last SQL Query: " + xmlhttp.responseText;
+			if (queue.length > 0) {
+				document.getElementById("success").innerHTML = "Found server, " + queue.length + " requests remain";
+				setTimeout(submitQueue, 100);
+			}
+			else {
+				document.getElementById("success").innerHTML = "Success!";
+				setTimeout(function() {
+					document.getElementById("success").innerHTML = "";
+				}, 2000);
+			}
+		}
+		else {
+			setTimeout(function() {
+				submitQueue(true);
+			}, 10000);
+			document.getElementById("success").innerHTML = "Couldn't find server, queued requests: " + queue.length;
+		}
 	}
 }
 
@@ -251,6 +306,7 @@ function submitWithAJAX() {
 			}
 		}
 		document.getElementById("output").innerHTML = "Sending...";
+		lastRequest = request;
 		xmlhttp.send(request);
 		console.log("Sending request: " + request);
 		for (elementID in elements) {
@@ -261,11 +317,12 @@ function submitWithAJAX() {
 			else if (element.value == "Set" || element.value == "Stack" || element.value == "None") {
 				element.value = "None";
 			}
-			else if ((element.name == "matchNo" && !form.elements["elimNo"].value)) {
+			else if ((element.name == "matchNo" && !form.elements["elimNo"].value > 0)) {
 				element.value++;
 				checkBounds(element);
 			}
-			else if (element.name == "elimNo" && element.value) {
+			else if (element.name == "elimNo" && element.value > 0) {
+				console.log("Elimno on");
 				element.value++;
 				if (element.value > element.max) {
 					element.value = 1;
@@ -273,9 +330,9 @@ function submitWithAJAX() {
 					checkBounds(form.elements["matchNo"]);
 				}
 			}
-			else if (element.name == "matchType" || element.type == "submit" || element.name == "matchNo") {
-			}			
-			else if (element.type =="number") {
+			else if (element.name == "matchType" || element.type == "submit" || element.name == "matchNo" || element.name == "elimNo") {
+			}
+			else if (element.type =="number" && element.name != "teamNo") {
 				element.value = 0;
 				if (element.oninput) {
 					element.oninput();
