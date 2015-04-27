@@ -17,11 +17,13 @@ else {
 	xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 }
 
+// Assign the tableBody variable and download new data from the server when the page has loaded.
 window.onload = function() {
 	tableBody = document.getElementById("resultTableBody");
 	reloadCache();
 }
 
+// This runs when new data has been received from the server.
 xmlhttp.onreadystatechange = function() {
 	if(xmlhttp.readyState == 4){
 		if (xmlhttp.responseText) {
@@ -36,6 +38,7 @@ xmlhttp.onreadystatechange = function() {
 	}
 }
 
+// Gets a string representing the current date and time.
 function getDateString() {
 	var date = new Date();
 	var dateString = "" + date.getHours() % 12 + ":" + date.getMinutes() + ":" + date.getSeconds() + (date.getHours() > 12 ? " PM" : " AM");
@@ -43,6 +46,7 @@ function getDateString() {
 	return dateString;
 }
 
+// Makes an html cell with text and a color.
 function makeCell(text, color) {
 	var cell = document.createElement("td");
 	if (text) {
@@ -54,6 +58,7 @@ function makeCell(text, color) {
 	return cell;
 }
 
+// Makes an html cell based on a number and the expected maximum
 function makeNumberCell(number, max) {
 	if (number) {
 		return makeCell(number, getColor(number, max));
@@ -63,6 +68,7 @@ function makeNumberCell(number, max) {
 	}
 }
 
+// Gets the color a cell should be based on a number and the expected maximum
 function getColor(number, max) {
 	if (number >= max * 0.75) {
 		return("#afa");
@@ -78,6 +84,7 @@ function getColor(number, max) {
 	}
 }
 
+// Creates an html cell based on to values, the first indicating a (robot/coop) set and the second indicating a stack
 function makeStackSetCell(set, stack) {
 	if (stack == true || stack == 1 || stack == "1") {
 		return makeCell("Stack", "#afa");
@@ -90,6 +97,7 @@ function makeStackSetCell(set, stack) {
 	}
 }
 
+// Creates an html cell based on boolean data
 function makeBooleanCell(value) {
 	if (value == true || value == 1 || value == "1") {
 		return makeCell("Yes", "#afa");
@@ -99,12 +107,14 @@ function makeBooleanCell(value) {
 	}
 }
 
+// Loads a new, up-to-date version of the data from the server.
 function reloadCache() {
 	document.getElementById("cacheIndicator").src = "images/loading.gif";
 	xmlhttp.open("GET","GetTeam.php?team=All",true);
 	xmlhttp.send();
 }
 
+// Clears the table and appends everything.  Run this whenever the data changes.
 function redisplay() {
 	clearTable();
 	if (!document.getElementById("team1No").value) {
@@ -119,16 +129,7 @@ function redisplay() {
 	}
 }
 
-function filter(teamNo, array) {
-	var filteredData = [];
-	for (id in array) {
-		if (array[id].teamNumber == teamNo && teamNo) {
-			filteredData.push(array[id]);
-		}
-	}
-	return filteredData;
-}
-
+// Creates a table row based on a team's data
 function makeRow(team) {
 	var row = document.createElement("tr");
 	if (team.elimNumber) {
@@ -177,6 +178,7 @@ function makeRow(team) {
 	return row;
 }
 
+// Clears all values out of the table so new ones can be appended
 function clearTable(teams) {
 	var oldBody = tableBody;
 	var newBody = document.createElement("tbody");
@@ -184,15 +186,28 @@ function clearTable(teams) {
 	oldBody.parentNode.replaceChild(tableBody, oldBody);
 }
 
+// Appends an array of teams to the table, sorting them by the current set of sorting functions
 function appendTable(teams) {
-	// Don't touch the original array
-	var myTeams = teams.slice();
+	var myTeams = teams.slice(); // Don't touch the original array
 	myTeams.sort(sorter);
 	for (team in myTeams) {
 		tableBody.appendChild(makeRow(myTeams[team]));
 	}
 }
 
+// Filters an array of teams by team number.
+function filter(teamNo, array) {
+	var filteredData = [];
+	for (id in array) {
+		if (array[id].teamNumber == teamNo && teamNo) {
+			filteredData.push(array[id]);
+		}
+	}
+	return filteredData;
+}
+
+// Adds a sorter function to sort the data, input the column you want sorted by.
+// If the data is already sorted by that column, the sort will be reversed.
 function addSorter(column, cancelRedisplay) {
 	if (sortNames[sortNames.length - 1] == column) {
 		sorts[sorts.length - 1] = reverseSorter(sorts[sorts.length - 1]);
@@ -228,6 +243,11 @@ function addSorter(column, cancelRedisplay) {
 	}
 }
 
+// Makes a sorter function based on a column, type, and a second column if necessary for the type
+// Types are: highNumber (sorts a number value from highest to lowest)
+// lowNumber (sorts a number value from lowest to highest)
+// text (sorts text from a to z)
+// stackSet (sorts two boolean values assuming that item 0 indicates a set and item 2 indicates a stack)
 function makeSorter(column, type, column2) {
 	if (column == undefined) {
 		return function() {return 0;}
@@ -279,6 +299,7 @@ function makeSorter(column, type, column2) {
 	}
 }
 
+// Goes through the sorts array and tries each sorting function until one works
 function sorter(a, b) {
 	for (var i = sorts.length - 1; i >= 0; i--) {
 		var order = sorts[i](a, b);
@@ -289,12 +310,14 @@ function sorter(a, b) {
 	return 0;
 }
 
+// Returns a sorting function that sorts in the opposite direction as the inputted sorting function
 function reverseSorter(func) {
 	return function(a, b) {
 		return func(b, a);
 	}
 }
 
+// Sorting function that sorts by the match info
 function sortByMatch(a, b) {
 	if (a.matchType == b.matchType) {
 		if (a.elimNumber && a.elimNumber != b.elimNumber) {
