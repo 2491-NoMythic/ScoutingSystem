@@ -1,14 +1,14 @@
 var form;
-var xmlhttpCache;
+var xmlhttp;
 var tableBody;
-var responseCache;
+var response;
 if (window.XMLHttpRequest) {
 	// code for IE7+, Firefox, Chrome, Opera, Safari
-	xmlhttpCache = new XMLHttpRequest();
+	xmlhttp = new XMLHttpRequest();
 }
 else {
 	// code for IE6, IE5
-	xmlhttpCache = new ActiveXObject("Microsoft.XMLHTTP");
+	xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 }
 
 window.onload = function() {
@@ -16,12 +16,12 @@ window.onload = function() {
 	reloadCache();
 }
 
-xmlhttpCache.onreadystatechange = function() {
-	if(xmlhttpCache.readyState == 4){
-		if (xmlhttpCache.responseText) {
+xmlhttp.onreadystatechange = function() {
+	if(xmlhttp.readyState == 4){
+		if (xmlhttp.responseText) {
 			document.getElementById("cacheIndicator").src = "images/success.png";
 			document.getElementById("lastCacheUpdate").innerHTML = "Last update: " + getDateString();
-			responseCache = JSON.parse(xmlhttpCache.responseText);
+			response = JSON.parse(xmlhttp.responseText);
 			redisplay();
 		}
 		else {
@@ -95,21 +95,21 @@ function makeBooleanCell(value) {
 
 function reloadCache() {
 	document.getElementById("cacheIndicator").src = "images/loading.gif";
-	xmlhttpCache.open("GET","GetTeam.php?team=All",true);
-	xmlhttpCache.send();
+	xmlhttp.open("GET","GetTeam.php?team=All",true);
+	xmlhttp.send();
 }
 
 function redisplay() {
 	clearTable();
 	if (!document.getElementById("team1No").value) {
-		appendTable(responseCache);
+		appendTable(response);
 	}
 	else {
-		appendTable(filter(document.getElementById("team1No").value, responseCache));
-		appendTable(filter(document.getElementById("team2No").value, responseCache));
-		appendTable(filter(document.getElementById("team3No").value, responseCache));
-		appendTable(filter(document.getElementById("team4No").value, responseCache));
-		appendTable(filter(document.getElementById("team5No").value, responseCache));
+		appendTable(filter(document.getElementById("team1No").value, response));
+		appendTable(filter(document.getElementById("team2No").value, response));
+		appendTable(filter(document.getElementById("team3No").value, response));
+		appendTable(filter(document.getElementById("team4No").value, response));
+		appendTable(filter(document.getElementById("team5No").value, response));
 	}
 }
 
