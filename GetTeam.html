@@ -17,65 +17,64 @@
 	</style>
 </head>
 <body>
-<a href="index.html">Home</a> <a href="ScoutingInputForm.html">Input Data</a> <a href="GetAverage.html">Average Data</a>
-<br />
-Allies: <input type="text" onchange="redisplay()" id="team1No" size="4"><input type="text" onchange="redisplay()" id="team2No" size="4">
-Opposing Alliance: <input type="text" onchange="redisplay()" id="team3No" size="4"><input type="text" onchange="redisplay()" id="team4No" size="4"><input type="text" onchange="redisplay()" id="team5No" size="4">
-<input type="checkbox" id="showNotes" onchange="redisplay()" checked><label for="enableNotes">Show Notes</label>
-<input type="button" id="reloadCache" onclick="reloadCache()" value="Reload Cache"> <img id="cacheIndicator" src="images/loading.gif" width=10 height=10> <span id="lastCacheUpdate">Loading...</span>
+	<a href="index.html">Home</a> <a href="ScoutingInputForm.html">Input Data</a> <a href="GetAverage.html">Average Data</a>
+	<br />
+	Allies: <input type="text" onchange="redisplay()" id="team1No" size="4"><input type="text" onchange="redisplay()" id="team2No" size="4">
+	Opposing Alliance: <input type="text" onchange="redisplay()" id="team3No" size="4"><input type="text" onchange="redisplay()" id="team4No" size="4"><input type="text" onchange="redisplay()" id="team5No" size="4">
+	<input type="checkbox" id="showNotes" onchange="redisplay()" checked><label for="enableNotes">Show Notes</label>
+	<input type="button" id="reloadCache" onclick="reloadCache()" value="Reload Cache"> <img id="cacheIndicator" src="images/loading.gif" width=10 height=10> <span id="lastCacheUpdate">Loading...</span>
+	<div id="result">
+		<table id="resultTable" cellspacing=0 cellpadding=3>
+			<thead>
+				<tr style="font-size: 16px">
+					<th colspan=2>Match</th>
+					<th colspan=8>Autonomous</th>
+					<th colspan=3 style="font-size: 14px">Autonomous (Alliance)</th>
+					<th colspan=6>Teleop</th>
+					<th colspan=3>Noodles</th>
+					<th colspan=3>Coopertition</th>
+					<th colspan=4>Position</th>
+					<th>Total</th>
+					<th>Notes</th>
+				</tr>
+				<tr style="font-size: 11px">
+					<th style="font-size: 12px; min-width: 96px;">Match Info</th>
+					<th>Team<br />Number</th>
+					<th>Robot<br />Moved</th>
+					<th>Totes<br />Moved</th>
+					<th style="font-size: 9px">Containers<br />Moved</th>
+					<th>Tote<br />Stack</th>
+					<th>Bin A</th>
+					<th>Bin B</th>
+					<th>Bin C</th>
+					<th>Bin D</th>
+					<th>Robot<br />Set</th>
+					<th>Container<br />Set</th>
+					<th>Tote<br />Set</th>
+					<th>Totes<br />Stacked</th>
+					<th>Tote<br />Stacks</th>
+					<th>Tallest<br />Stack</th>
+					<th style="font-size: 9px">Containers<br />Stacked</th>
+					<th style="font-size: 9px">Highest<br />Container</th>
+					<th style="font-size: 9px">Containers<br />Taken</th>
+					<th style="font-size: 9px">Containers</th>
+					<th>Landfill</th>
+					<th>Thrown</th>
+					<th>Totes<br />Placed</th>
+					<th>Totes<br />Stacked</th>
+					<th>Totes<br />Set</th>
+					<th>L.F. Left</th>
+					<th>L.F. Right</th>
+					<th>D.S. Left</th>
+					<th>D.S. Right</th>
 
-<div id="result">
-<table id="resultTable" cellspacing=0 cellpadding=3>
-<thead>
-<tr style="font-size: 16px">
-<th colspan=2>Match</th>
-<th colspan=8>Autonomous</th>
-<th colspan=3 style="font-size: 14px">Autonomous (Alliance)</th>
-<th colspan=6>Teleop</th>
-<th colspan=3>Noodles</th>
-<th colspan=3>Coopertition</th>
-<th colspan=4>Position</th>
-<th>Total</th>
-<th>Notes</th>
-</tr>
-<tr style="font-size: 11px">
-<th style="font-size: 12px; min-width: 96px;">Match Info</th>
-<th>Team<br />Number</th>
-<th>Robot<br />Moved</th>
-<th>Totes<br />Moved</th>
-<th style="font-size: 9px">Containers<br />Moved</th>
-<th>Tote<br />Stack</th>
-<th>Bin A</th>
-<th>Bin B</th>
-<th>Bin C</th>
-<th>Bin D</th>
-<th>Robot<br />Set</th>
-<th>Container<br />Set</th>
-<th>Tote<br />Set</th>
-<th>Totes<br />Stacked</th>
-<th>Tote<br />Stacks</th>
-<th>Tallest<br />Stack</th>
-<th style="font-size: 9px">Containers<br />Stacked</th>
-<th style="font-size: 9px">Highest<br />Container</th>
-<th style="font-size: 9px">Containers<br />Taken</th>
-<th style="font-size: 9px">Containers</th>
-<th>Landfill</th>
-<th>Thrown</th>
-<th>Totes<br />Placed</th>
-<th>Totes<br />Stacked</th>
-<th>Totes<br />Set</th>
-<th>L.F. Left</th>
-<th>L.F. Right</th>
-<th>D.S. Left</th>
-<th>D.S. Right</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody id="resultTableBody">
 
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody id="resultTableBody">
-
-</tbody>
-</table>
-</div>
+			</tbody>
+		</table>
+	</div>
 </body>
