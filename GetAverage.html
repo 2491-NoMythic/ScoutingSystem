@@ -19,7 +19,9 @@
 <body>
 	<a href="index.html">Home</a> <a href="ScoutingInputForm.html">Input Data</a> <a href="GetTeam.html">Get Data</a>
 	<br />
-	Allies: <input type="text" onchange="redisplay()" id="team1No" size="4"><input type="text" onchange="redisplay()" id="team2No" size="4"> Opposing Alliance: <input type="text" onchange="redisplay()" id="team3No" size="4"><input type="text" onchange="redisplay()" id="team4No" size="4"><input type="text" onchange="redisplay()" id="team5No" size="4"> <input type="button" id="reloadCache" onclick="reloadCache()" value="Reload Cache"> <img id="cacheIndicator" src="images/loading.gif" width=10 height=10> <span id="lastCacheUpdate">Loading...</span>
+	Allies: <input type="text" onchange="redisplay()" id="team1No" size="4"><input type="text" onchange="redisplay()" id="team2No" size="4">
+	Opposing Alliance: <input type="text" onchange="redisplay()" id="team3No" size="4"><input type="text" onchange="redisplay()" id="team4No" size="4"><input type="text" onchange="redisplay()" id="team5No" size="4">
+	<input type="button" id="reloadCache" onclick="reloadCache()" value="Reload Cache"> <img id="cacheIndicator" src="images/loading.gif" width=10 height=10> <span id="lastCacheUpdate">Loading...</span>
 	<div id="result">
 		<table id="resultTable" cellspacing=0 cellpadding=3>
 			<thead>
