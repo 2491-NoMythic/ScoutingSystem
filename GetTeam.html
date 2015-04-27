@@ -34,42 +34,41 @@
 					<th colspan=3>Noodles</th>
 					<th colspan=3>Coopertition</th>
 					<th colspan=4>Position</th>
-					<th>Total</th>
-					<th>Notes</th>
+					<th onclick="addSorter('totalScore')">Total</th>
+					<th onclick="addSorter('notes')">Notes</th>
 				</tr>
 				<tr style="font-size: 11px">
-					<th style="font-size: 12px; min-width: 96px;">Match Info</th>
-					<th>Team<br />Number</th>
-					<th>Robot<br />Moved</th>
-					<th>Totes<br />Moved</th>
-					<th style="font-size: 9px">Containers<br />Moved</th>
-					<th>Tote<br />Stack</th>
-					<th>Bin A</th>
-					<th>Bin B</th>
-					<th>Bin C</th>
-					<th>Bin D</th>
-					<th>Robot<br />Set</th>
-					<th>Container<br />Set</th>
-					<th>Tote<br />Set</th>
-					<th>Totes<br />Stacked</th>
-					<th>Tote<br />Stacks</th>
-					<th>Tallest<br />Stack</th>
-					<th style="font-size: 9px">Containers<br />Stacked</th>
-					<th style="font-size: 9px">Highest<br />Container</th>
-					<th style="font-size: 9px">Containers<br />Taken</th>
-					<th style="font-size: 9px">Containers</th>
-					<th>Landfill</th>
-					<th>Thrown</th>
-					<th>Totes<br />Placed</th>
-					<th>Totes<br />Stacked</th>
-					<th>Tote<br />Set</th>
-					<th>L.F. Left</th>
-					<th>L.F. Right</th>
-					<th>D.S. Left</th>
-					<th>D.S. Right</th>
-
-					<th></th>
-					<th></th>
+					<th onclick="addSorter('matchNumber')" style="font-size: 12px; min-width: 96px;">Match Info</th>
+					<th onclick="addSorter('teamNumber');">Team<br />Number</th>
+					<th onclick="addSorter('autoRobotMoved')">Robot<br />Moved</th>
+					<th onclick="addSorter('autoTotesMoved')">Totes<br />Moved</th>
+					<th onclick="addSorter('autoContainersMoved')" style="font-size: 9px">Containers<br />Moved</th>
+					<th onclick="addSorter('autoToteStack')">Tote<br />Stack</th>
+					<th onclick="addSorter('binA')">Bin A</th>
+					<th onclick="addSorter('binB')">Bin B</th>
+					<th onclick="addSorter('binC')">Bin C</th>
+					<th onclick="addSorter('binD')">Bin D</th>
+					<th onclick="addSorter('allianceRobotSet')">Robot<br />Set</th>
+					<th onclick="addSorter('allianceContainerSet')">Container<br />Set</th>
+					<th onclick="addSorter('allianceToteSet')">Tote<br />Set</th>
+					<th onclick="addSorter('teleTotesStacked')">Totes<br />Stacked</th>
+					<th onclick="addSorter('teleToteStacks')">Tote<br />Stacks</th>
+					<th onclick="addSorter('teleLargestToteStack')">Tallest<br />Stack</th>
+					<th onclick="addSorter('teleContainersPlaced')" style="font-size: 9px">Containers<br />Stacked</th>
+					<th onclick="addSorter('teleHighestContainerPlaced')" style="font-size: 9px">Highest<br />Container</th>
+					<th onclick="addSorter('teleContainersTakenFromStep')" style="font-size: 9px">Containers<br />Taken</th>
+					<th onclick="addSorter('teleNoodlesInContainers')" style="font-size: 9px">Containers</th>
+					<th onclick="addSorter('teleNoodlesInLandfill')">Landfill</th>
+					<th onclick="addSorter('teleNoodlesThrown')">Thrown</th>
+					<th onclick="addSorter('coopTotesPlaced')">Totes<br />Placed</th>
+					<th onclick="addSorter('coopTotesStacked')">Totes<br />Stacked</th>
+					<th onclick="addSorter('coopToteSet')">Tote<br />Set</th>
+					<th onclick="addSorter('frontLeft')">L.F. Left</th>
+					<th onclick="addSorter('frontRight')">L.F. Right</th>
+					<th onclick="addSorter('backLeft')">D.S. Left</th>
+					<th onclick="addSorter('backRight')">D.S. Right</th>
+					<th onclick="addSorter('totalScore')"></th>
+					<th onclick="addSorter('notes')"></th>
 				</tr>
 			</thead>
 			<tbody id="resultTableBody">
