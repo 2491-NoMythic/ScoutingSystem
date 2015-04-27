@@ -1,111 +1,40 @@
 var form
-var xmlhttp, xmlhttp2, xmlhttp3, xmlhttp4, xmlhttp5;
-var request1done = true;
-var request2done = true;
-var request3done = true;
-var request4done = true;
+var xmlhttp
 var tableBody;
-var response1, response2, response3, response4, response5, responseCache;
+var response
 if (window.XMLHttpRequest) {
 	// code for IE7+, Firefox, Chrome, Opera, Safari
 	xmlhttp = new XMLHttpRequest();
-	xmlhttp2 = new XMLHttpRequest();
-	xmlhttp3 = new XMLHttpRequest();
-	xmlhttp4 = new XMLHttpRequest();
-	xmlhttp5 = new XMLHttpRequest();
-	xmlhttpCache = new XMLHttpRequest();
 }
 else {
 	// code for IE6, IE5
 	xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-	xmlhttp2 = new ActiveXObject("Microsoft.XMLHTTP");
-	xmlhttp3 = new ActiveXObject("Microsoft.XMLHTTP");
-	xmlhttp4 = new ActiveXObject("Microsoft.XMLHTTP");
-	xmlhttp5 = new ActiveXObject("Microsoft.XMLHTTP");
-	xmlhttpCache = new ActiveXObject("Microsoft.XMLHTTP");
 }
 
 window.onload = function() {
 	tableBody = document.getElementById("resultTableBody");
 	reloadCache();
-	getTeamInfo();
 }
 
 xmlhttp.onreadystatechange = function() {
 	if(xmlhttp.readyState == 4){
-		response1 = JSON.parse(xmlhttp.responseText);
-		if (response1[0].teamNumber || response1[1].teamNumber) {
-			appendTable(response1);
-		}
-		request1done = true;
-	}
-}
-
-xmlhttp2.onreadystatechange = function() {
-	if(xmlhttp2.readyState == 4){
-		if (request1done) {
-			response2 = JSON.parse(xmlhttp2.responseText);
-			if (response2[0].teamNumber) {
-				appendTable(response2);
-			}
-			request2done = true;
+		if (xmlhttp.responseText) {
+			document.getElementById("cacheIndicator").src = "images/success.png";
+			document.getElementById("lastCacheUpdate").innerHTML = "Last update: " + getDateString();
+			response = JSON.parse(xmlhttp.responseText);
+			redisplay();
 		}
 		else {
-			setTimeout(xmlhttp2.onreadystatechange, 100);
+			document.getElementById("cacheIndicator").src = "images/fail.png";
 		}
 	}
 }
 
-xmlhttp3.onreadystatechange = function() {
-	if(xmlhttp3.readyState == 4){
-		if (request2done) {
-			response3 = JSON.parse(xmlhttp3.responseText);
-			if (response3[0].teamNumber) {
-				appendTable(response3);
-			}
-			request3done = true;
-		}
-		else {
-			setTimeout(xmlhttp3.onreadystatechange, 100);
-		}
-	}
-}
-
-xmlhttp4.onreadystatechange = function() {
-	if(xmlhttp4.readyState == 4){
-		if (request3done) {
-			response4 = JSON.parse(xmlhttp4.responseText);
-			if (response4[0].teamNumber) {
-				appendTable(response4);
-			}
-			request4done = true;
-		}
-		else {
-			setTimeout(xmlhttp4.onreadystatechange, 100);
-		}
-	}
-}
-
-xmlhttp5.onreadystatechange = function() {
-	if(xmlhttp5.readyState == 4){
-		if (request4done) {
-			response5 = JSON.parse(xmlhttp5.responseText);
-			if (response5[0].teamNumber) {
-				appendTable(response5);
-			}
-		}
-		else {
-			setTimeout(xmlhttp5.onreadystatechange, 100);
-		}
-	}
-}
-
-xmlhttpCache.onreadystatechange = function() {
-	if(xmlhttpCache.readyState == 4){
-		if (xmlhttpCache.responseText) {
-			responseCache = JSON.parse(xmlhttpCache.responseText);
-		}
-	}
+function getDateString() {
+	var date = new Date();
+	var dateString = "" + date.getHours() % 12 + ":" + date.getMinutes() + ":" + date.getSeconds() + (date.getHours() > 12 ? " PM" : " AM");
+	dateString += " on " + date.toDateString();
+	return dateString;
 }
 
 function makeCell(text, color) {
@@ -137,44 +66,21 @@ function makeNumberCell(number, max) {
 }
 
 function reloadCache() {
-	xmlhttpCache.open("GET","GetTeam.php?mode=Average&team=All",true);
-	xmlhttpCache.send();
-}
-
-function checkCacheMode() {
-	var cacheMode = document.getElementById("cacheMode").checked;
-	if (cacheMode && !responseCache) {
-		reloadCache();
-	}
-	if (cacheMode) {
-		document.getElementById("reloadCache").style.display = "inline";
-	}
-	else {
-		document.getElementById("reloadCache").style.display = "none";
-	}
+	xmlhttp.open("GET","GetTeam.php?mode=Average&team=All",true);
+	xmlhttp.send();
 }
 
 function redisplay() {
 	clearTable();
-	if (document.getElementById("cacheMode").checked) {
-		if (!document.getElementById("team1No").value) {
-			appendTable(responseCache);
-		}
-		else {
-			filteredResponses = [];
-			appendTable(filter(document.getElementById("team1No").value, responseCache));
-			appendTable(filter(document.getElementById("team2No").value, responseCache));
-			appendTable(filter(document.getElementById("team3No").value, responseCache));
-			appendTable(filter(document.getElementById("team4No").value, responseCache));
-			appendTable(filter(document.getElementById("team5No").value, responseCache));
-		}
+	if (!document.getElementById("team1No").value) {
+		appendTable(response);
 	}
 	else {
-		appendTable(response1);
-		appendTable(response2);
-		appendTable(response3);
-		appendTable(response4);
-		appendTable(response5);
+		appendTable(filter(document.getElementById("team1No").value, response));
+		appendTable(filter(document.getElementById("team2No").value, response));
+		appendTable(filter(document.getElementById("team3No").value, response));
+		appendTable(filter(document.getElementById("team4No").value, response));
+		appendTable(filter(document.getElementById("team5No").value, response));
 	}
 }
 
@@ -256,48 +162,5 @@ function clearTable(teams) {
 function appendTable(teams) {
 	for (team in teams) {
 		tableBody.appendChild(makeRow(teams[team]));
-	}
-}
-
-function getTeamInfo() {
-	if (document.getElementById("cacheMode").checked) {
-		redisplay();
-	}
-	else {
-		var team1No = document.getElementById("team1No").value;
-		var team2No = document.getElementById("team2No").value;
-		var team3No = document.getElementById("team3No").value;
-		var team4No = document.getElementById("team4No").value;
-		var team5No = document.getElementById("team5No").value;
-		if (!team1No) {
-            team1No = "All";
-		}
-		if (!team2No) {
-			team2No = "None";
-		}
-		if (!team3No) {
-			team3No = "None";
-		}
-		if (!team4No) {
-			team4No = "None";
-		}
-		if (!team5No) {
-			team5No = "None";
-		}
-		clearTable();
-		request1done = false;
-		request2done = false;
-		request3done = false;
-		request4done = false;
-		xmlhttp.open("GET","GetTeam.php?mode=Average&team=" + team1No,true);
-		xmlhttp.send();
-		xmlhttp2.open("GET","GetTeam.php?mode=Average&team=" + team2No,true);
-		xmlhttp2.send();
-		xmlhttp3.open("GET","GetTeam.php?mode=Average&team=" + team3No,true);
-		xmlhttp3.send();
-		xmlhttp4.open("GET","GetTeam.php?mode=Average&team=" + team4No,true);
-		xmlhttp4.send();
-		xmlhttp5.open("GET","GetTeam.php?mode=Average&team=" + team5No,true);
-		xmlhttp5.send();
 	}
 }
