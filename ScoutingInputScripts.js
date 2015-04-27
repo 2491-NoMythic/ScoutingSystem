@@ -103,6 +103,7 @@ function checkTotesStacked() {
 	else {
 		highestStackInput.style.display = "none";
 		highestStackLabel.style.display = "none";
+		highestStackInput.value = 0;
 		totesStackedLabel.innerHTML = "Totes stacked";
 	}
 
@@ -127,6 +128,7 @@ function checkContainersPlaced () {
 	else {
 		highestContainerInput.style.display = "none";
 		highestContainerLabel.style.display = "none";
+		highestContainerInput.value = 0;
 		containersPlacedLabel.innerHTML = "Containers stacked";
 	}
 }
@@ -189,6 +191,7 @@ function checkCoopTotes() {
 		totesLabel.innerHTML = "Coopertition totes placed";
 		stackedInput.style.display = "none";
 		stackedLabel.style.display = "none";
+		stackedInput.value = 0;
 	}
 	if (stackedInput.value > 3) {
 		allianceSet.value = "Stack";
