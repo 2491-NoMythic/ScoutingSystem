@@ -32,7 +32,7 @@ xmlhttp.onreadystatechange = function() {
 
 function getDateString() {
 	var date = new Date();
-	var dateString = "" + date.getHours() % 12 + ":" + date.getMinutes() + ":" + date.getSeconds() + (date.getHours() > 12 ? " PM" : " AM");
+	var dateString = "" + date.getHours() % 12 + ":" + ("00" + date.getMinutes()).slice(-2) + ":" + ("00" + date.getSeconds()).slice(-2) + (date.getHours() > 12 ? " PM" : " AM");
 	dateString += " on " + date.toDateString();
 	return dateString;
 }
@@ -127,7 +127,7 @@ function makeRow(team) {
 	row.appendChild(makePercentageCell(team.binA));
 	row.appendChild(makePercentageCell(team.binB));
 	row.appendChild(makePercentageCell(team.binC));
-	row.appendChild(makePercentageCell(team.binD));	
+	row.appendChild(makePercentageCell(team.binD));
 	row.appendChild(makePercentageCell(team.allianceContainerSet));
 	row.appendChild(makePercentageCell(team.allianceToteSet));
 	row.appendChild(makePercentageCell(team.allianceToteStack));
@@ -147,7 +147,7 @@ function makeRow(team) {
 	row.appendChild(makePercentageCell(team.frontLeft));
 	row.appendChild(makePercentageCell(team.frontRight));
 	row.appendChild(makePercentageCell(team.backLeft));
-	row.appendChild(makePercentageCell(team.backRight));	
+	row.appendChild(makePercentageCell(team.backRight));
 	row.appendChild(makeNumberCell(team.totalScore, 100));
 	return row;
 }

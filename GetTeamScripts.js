@@ -41,7 +41,7 @@ xmlhttp.onreadystatechange = function() {
 // Gets a string representing the current date and time.
 function getDateString() {
 	var date = new Date();
-	var dateString = "" + date.getHours() % 12 + ":" + date.getMinutes() + ":" + date.getSeconds() + (date.getHours() > 12 ? " PM" : " AM");
+	var dateString = "" + date.getHours() % 12 + ":" + ("00" + date.getMinutes()).slice(-2) + ":" + ("00" + date.getSeconds()).slice(-2) + (date.getHours() > 12 ? " PM" : " AM");
 	dateString += " on " + date.toDateString();
 	return dateString;
 }
