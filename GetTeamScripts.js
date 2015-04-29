@@ -4,6 +4,7 @@ var tableBody;
 var response;
 var sorts = [];
 var sortNames = [];
+var filters = new FilterGroup("any");
 
 addSorter("teamNumber", true);
 addSorter("matchNumber", true);
@@ -21,6 +22,7 @@ else {
 window.onload = function() {
 	tableBody = document.getElementById("resultTableBody");
 	reloadCache();
+	document.getElementById("filters").appendChild(filters.htmlobject);
 }
 
 // This runs when new data has been received from the server.
@@ -121,11 +123,11 @@ function redisplay() {
 		appendTable(response);
 	}
 	else {
-		appendTable(filter(document.getElementById("team1No").value, response));
-		appendTable(filter(document.getElementById("team2No").value, response));
-		appendTable(filter(document.getElementById("team3No").value, response));
-		appendTable(filter(document.getElementById("team4No").value, response));
-		appendTable(filter(document.getElementById("team5No").value, response));
+		appendTable(filterByTeamno(document.getElementById("team1No").value, response));
+		appendTable(filterByTeamno(document.getElementById("team2No").value, response));
+		appendTable(filterByTeamno(document.getElementById("team3No").value, response));
+		appendTable(filterByTeamno(document.getElementById("team4No").value, response));
+		appendTable(filterByTeamno(document.getElementById("team5No").value, response));
 	}
 }
 
@@ -162,10 +164,10 @@ function makeRow(team) {
 	row.appendChild(makeNumberCell(team.coopTotesPlaced, 3));
 	row.appendChild(makeNumberCell(team.coopTotesStacked, 4));
 	row.appendChild(makeStackSetCell(team.coopToteSet, team.coopToteStack));
-	row.appendChild(makeBooleanCell(team.frontLeft));	
+	row.appendChild(makeBooleanCell(team.frontLeft));
 	row.appendChild(makeBooleanCell(team.frontRight));
 	row.appendChild(makeBooleanCell(team.backLeft));
-	row.appendChild(makeBooleanCell(team.backRight));	
+	row.appendChild(makeBooleanCell(team.backRight));
 	row.appendChild(makeNumberCell(team.totalScore));
 	if (document.getElementById("showNotes").checked) {
 		var notes = makeCell(team.notes);
@@ -188,7 +190,7 @@ function clearTable(teams) {
 
 // Appends an array of teams to the table, sorting them by the current set of sorting functions
 function appendTable(teams) {
-	var myTeams = teams.slice(); // Don't touch the original array
+	myTeams = filterWithFilter(teams, filters);
 	myTeams.sort(sorter);
 	for (team in myTeams) {
 		tableBody.appendChild(makeRow(myTeams[team]));
@@ -196,7 +198,7 @@ function appendTable(teams) {
 }
 
 // Filters an array of teams by team number.
-function filter(teamNo, array) {
+function filterByTeamno(teamNo, array) {
 	var filteredData = [];
 	for (id in array) {
 		if (array[id].teamNumber == teamNo && teamNo) {
@@ -347,4 +349,469 @@ function sortByMatch(a, b) {
 			return 1;
 		}
 	}
+}
+
+function showHideFilters() {
+	var filterDiv = document.getElementById("filters");
+	var filterButton = document.getElementById("showHideFilters");
+	if (filterDiv.style.display == "none") {
+		filterDiv.style.display = "block";
+		filterButton.value = "Hide Filters";
+	}
+	else {
+		filterDiv.style.display = "none";
+		filterButton.value = "Show Filters";
+	}
+}
+
+function filterWithFilter(array, filter) {
+	var filteredData = [];
+	for (id in array) {
+		if (filter.check(array[id])) {
+			filteredData.push(array[id]);
+		}
+	}
+	return filteredData;
+}
+
+function Filter(owner, column, type, matcher, value, extraColumn) {
+	this.owner = owner;
+	this.col = column;
+	this.filtertype = type;
+	if (matcher == undefined) {
+		switch (type) {
+			case "text":
+				this.matcher = "is";
+				this.filtervalue = "";
+				break;
+			case "boolean":
+				this.matcher = "is true";
+				this.filtervalue = undefined;
+				break;
+			case "number":
+				this.matcher = "equals";
+				this.filtervalue = "0";
+				break;
+		}
+		this.col2 = undefined;
+	}
+	else {
+		this.matcher = matcher;
+		this.filtervalue = value;
+		this.col2 = extraColumn;
+	}
+
+	// Create the HTML object
+	this.htmlobject = document.createElement("div");
+	this.htmlobject.owner = this;
+	var colSelectOpts = ["matchType", "matchNumber", "autoRobotMoved", "autoTotesMoved", "autoContainersMoved", "autoToteStack", "binA", "binB", "binC", "binD", "allianceRobotSet", "allianceContainerSet", "allianceToteSet", "teleTotesStacked", "teleToteStacks", "teleLargestToteStack", "teleContainersPlaced", "teleHighestContainerPlaced", "teleContainersTakenFromStep", "teleNoodlesInContainers", "teleNoodlesInLandfill", "teleNoodlesThrown", "coopTotesPlaced", "coopTotesStacked", "coopToteSet", "frontLeft", "frontRight", "backLeft", "backRight", "totalScore", "notes"];
+	var colSelectNames = ["Match Type", "Match Number", "Robot Moved", "Auto Totes Moved", "Auto Containers Moved", "Auto Tote Stack", "Bin A", "Bin B", "Bin C", "Bin D", "Robot Set", "Container Set", "Tote Set", "Totes Stacked", "Tote Stacks", "Highest Tote Stack", "Containers Placed", "Highest Container Placed", "Containers Taken from Step", "Noodles in Containers", "Noodles in Landfill", "Noodles Thrown", "Coop Totes Placed", "Highest Coop Tote", "Coop Tote Set", "Front Left", "Front Right", "Back Left", "Back Right", "Total Score", "Notes"];
+	var colSelectTypes = {
+		matchType: "text",
+		matchNumber: "number",
+		autoRobotMoved: "boolean",
+		autoTotesMoved: "number",
+		autoContainersMoved: "number",
+		autoToteStack: "boolean",
+		binA: "boolean",
+		binB: "boolean",
+		binC: "boolean",
+		binD: "boolean",
+		allianceRobotSet: "boolean",
+		allianceContainerSet: "boolean",
+		allianceToteSet: "stackset",
+		teleTotesStacked: "number",
+		teleToteStacks: "number",
+		teleLargestToteStack: "number",
+		teleContainersPlaced: "number",
+		teleHighestContainerPlaced: "number",
+		teleContainersTakenFromStep: "number",
+		teleNoodlesInContainers: "number",
+		teleNoodlesInLandfill: "number",
+		teleNoodlesThrown: "number",
+		coopTotesPlaced: "number",
+		coopTotesStacked: "number",
+		coopToteSet: "stackset",
+		frontLeft: "boolean",
+		frontRight: "boolean",
+		backLeft: "boolean",
+		backRight: "boolean",
+		totalScore: "number",
+		notes: "text"
+	}
+	var type = makeHTMLSelect(colSelectOpts, colSelectNames, this.col)
+	type.owner = this;
+	type.onchange = function() {
+		this.owner.col = this.value;
+		this.owner.filtertype = colSelectTypes[this.value];
+		this.owner.updateItemInfo();
+		redisplay();
+	}
+	this.htmlobject.appendChild(type);
+	this.iteminfo = document.createElement("span");
+	this.htmlobject.appendChild(this.iteminfo);
+	var buttons = document.createElement("span");
+	buttons.style.float = "right";
+	var tmp;
+	tmp = document.createElement("button");
+	tmp.innerHTML = "-";
+	tmp.owner = this;
+	tmp.onclick = function() {
+		this.owner.owner.remove(this.owner);
+	}
+	buttons.appendChild(tmp);
+	tmp = document.createElement("button");
+	tmp.innerHTML = "+";
+	tmp.owner = this;
+	tmp.onclick = function() {
+		this.owner.owner.newfilter(this.owner);
+	}
+	buttons.appendChild(tmp);
+	tmp = document.createElement("button");
+	tmp.innerHTML = "...";
+	tmp.owner = this;
+	tmp.onclick = function() {
+		this.owner.owner.newgroup(this.owner);
+	}
+	buttons.appendChild(tmp);
+	this.htmlobject.appendChild(buttons);
+	this.updateItemInfo = function() {
+		this.iteminfo.innerHTML = "";
+		switch (this.filtertype) {
+			case "text":
+				this.matcher = "contains";
+				var matcher = makeHTMLSelect(["is", "is not", "contains", "doesn't contain", "begins with", "ends with", "matches regex"], ["is", "is not", "contains", "doesn't contain", "begins with", "ends with", "matches regex"], this.matcher);
+				matcher.owner = this;
+				matcher.onchange = function() {
+					this.owner.matcher = this.value;
+					redisplay();
+				}
+				this.iteminfo.appendChild(matcher);
+				this.filtervalue = "";
+				var filtervalue = document.createElement("input");
+				filtervalue.type = "text";
+				filtervalue.owner = this;
+				filtervalue.onchange = function() {
+					this.owner.filtervalue = this.value;
+					redisplay();
+				}
+				this.iteminfo.appendChild(filtervalue);
+				break;
+			case "boolean":
+				this.matcher = "is true";
+				var matcher = makeHTMLSelect(["is true", "is false"], ["is true", "is false"], this.matcher);
+				matcher.owner = this;
+				matcher.onchange = function() {
+					this.owner.matcher = this.value;
+					redisplay();
+				}
+				this.iteminfo.appendChild(matcher);
+				break;
+			case "number":
+				this.matcher = "doesn't equal";
+				var matcher = makeHTMLSelect(["equals", "doesn't equal", "is greater than", "is less than"], ["equals", "doesn't equal", "is greater than", "is less than"], this.matcher);
+				matcher.owner = this;
+				matcher.onchange = function() {
+					this.owner.matcher = this.value;
+					redisplay();
+				}
+				this.iteminfo.appendChild(matcher);
+				this.filtervalue = "0";
+				var filtervalue = document.createElement("input");
+				filtervalue.type = "number";
+				filtervalue.value = 0;
+				filtervalue.owner = this;
+				filtervalue.min = -9999;
+				filtervalue.max = 99999;
+				filtervalue.onchange = function() {
+					this.owner.filtervalue = Number(this.value);
+					redisplay();
+				}
+				this.iteminfo.appendChild(filtervalue);
+				break;
+			case "stackset":
+				if (this.col == "allianceToteSet") {
+					this.col2 = "allianceToteStack";
+				}
+				else if (this.col == "coopToteSet") {
+					this.col2 = "coopToteStack";
+				}
+				else {
+					console.log("Couldn't figure out second column to go with stackset column " + this.col);
+				}
+				this.matcher = "got a set or stack";
+				var matcher = makeHTMLSelect(["got none", "got a set", "got a stack", "got a set or stack"], ["got none", "got a set", "got a stack", "got a set or stack"], this.matcher);
+				matcher.owner = this;
+				matcher.onchange = function() {
+					this.owner.matcher = this.value;
+					redisplay();
+				}
+				this.iteminfo.appendChild(matcher);
+				break;
+			default:
+				console.log("updateItemInfo failed!  Couldn't identify filter type which was " + this.filtertype);
+				break;
+		}
+		redisplay();
+	}
+	this.updateItemInfo();
+
+	this.check = function(match) {
+		switch (this.filtertype) {
+			case "text":
+				switch (this.matcher) {
+					case "is":
+						return match[this.col] == this.filtervalue;
+						break;
+					case "is not":
+						return match[this.col] != this.filtervalue;
+						break;
+					case "contains":
+						return match[this.col] != null && match[this.col].indexOf(this.filtervalue) != -1;
+						break;
+					case "doesn't contain":
+						return match[this.col] != null && match[this.col].indexOf(this.filtervalue) == -1;
+						break;
+					case "begins with":
+						return match[this.col] != null && match[this.col].indexOf(this.filtervalue) == 0;
+						break;
+					case "ends with":
+						return match[this.col] != null && match[this.col].indexOf(this.filtervalue, match[this.col].length - this.filtervalue.length) != -1;
+					case "matches regex":
+						return new RegExp("/" + matcher + "/", "i").test(match[this.col]);
+						break;
+					default:
+						console.log("Filter failed!  Couldn't identify matcher.  Filter type was " + this.filtertype + " and matcher was " + this.matcher);
+						break;
+				}
+				break;
+			case "boolean":
+				switch (this.matcher) {
+					case "is true":
+						return match[this.col] > 0;
+						break;
+					case "is false":
+						return match[this.col] == 0;
+						break;
+					default:
+						console.log("Filter failed!  Couldn't identify matcher.  Filter type was " + this.filterType + " and matcher was " + this.matcher);
+						break;
+				}
+			break;
+			case "number":
+				switch (this.matcher) {
+					case "equals":
+						return match[this.col] == this.filtervalue;
+						break;
+					case "doesn't equal":
+						return match[this.col] != this.filtervalue;
+						break;
+					case "is greater than":
+						return match[this.col] > this.filtervalue;
+						break;
+					case "is less than":
+						return match[this.col] < this.filtervalue;
+						break;
+					default:
+						console.log("Filter failed!  Couldn't identify matcher.  Filter type was " + this.filterType + " and matcher was " + this.matcher);
+						break;
+				}
+				break;
+			case "stackset":
+				switch (this.matcher) {
+					case "got none":
+						return match[this.col] == 0 && match[this.col2] == 0;
+						break;
+					case "got a set":
+						return match[this.col] > 0;
+						break;
+					case "got a stack":
+						return match[this.col2] > 0;
+						break;
+					case "got a set or stack":
+						return match[this.col] > 0 || match[this.col2] > 0;
+						break;
+					default:
+						console.log("Filter failed!  Couldn't identify matcher.  Filter type was " + this.filterType + " and matcher was " + this.matcher);
+						break;
+				}
+			default:
+				console.log("Filter failed!  Couldn't identify filter type, which was " + this.filterType);
+				break;
+		}
+	}
+}
+
+function FilterGroup(type, owner) {
+	this.owner = owner;
+	this.grouptype = type;
+	this.filters = [];
+	if (owner != undefined) {
+		this.padding = owner.padding + 1;
+	}
+	else {
+		this.padding = 0;
+	}
+
+	// Create the HTML object
+	this.htmlobject = document.createElement("div");
+	this.htmlobject.owner = this;
+	var info = document.createElement("div");
+	info.owner = this;
+	var tmp;
+	var type = makeHTMLSelect(["any", "all", "none"], ["Any", "All", "None"], this.grouptype);
+	type.owner = this;
+	type.onchange = function() {
+		this.owner.grouptype = this.value;
+		redisplay();
+	}
+	info.appendChild(type);
+	info.appendChild(makeHTMLSpan("of the following are true"));
+	var buttons = document.createElement("span");
+	buttons.style.float = "right";
+	if (this.owner) {
+		tmp = document.createElement("button");
+		tmp.innerHTML = "-";
+		tmp.owner = this;
+		tmp.onclick = function() {
+			this.owner.owner.remove(this.owner);
+		}
+		buttons.appendChild(tmp);
+	}
+	tmp = document.createElement("button");
+	tmp.innerHTML = "+";
+	tmp.owner = this;
+	tmp.onclick = function() {
+		this.owner.newfilter(0);
+	}
+	buttons.appendChild(tmp);
+	tmp = document.createElement("button");
+	tmp.innerHTML = "...";
+	tmp.owner = this;
+	tmp.onclick = function() {
+		this.owner.newgroup(0);
+	}
+	buttons.appendChild(tmp);
+	info.appendChild(buttons);
+	this.htmlobject.appendChild(info);
+	this.filterHTML = document.createElement("div");
+	this.filterHTML.style.paddingLeft = "32px";
+	this.htmlobject.appendChild(this.filterHTML);
+	this.redisplay = function() {
+		this.filterHTML.innerHTML = "";
+		for (var id in this.filters) {
+			this.filterHTML.appendChild(this.filters[id].htmlobject);
+		}
+	}
+	this.redisplay();
+
+	this.remove = function(object) {
+		var index = this.filters.indexOf(object);
+		if (object instanceof FilterGroup) {
+			var end = this.filters.splice(index, this.filters.length - index);
+			end.shift();
+			for (var id in object.filters) {
+				object.filters[id].owner = this;
+			}
+			this.filters = this.filters.concat(object.filters, end);
+		}
+		else {
+			if (index != -1) {
+				this.filters.splice(index, 1);
+			}
+		}
+		this.redisplay();
+		redisplay();
+	}
+	this.newfilter = function(position) {
+		var filter = new Filter(this, "matchNumber", "number", "doesn't equal", "0");
+		this.add(filter, position);
+	}
+	this.newgroup = function(position) {
+		var group = new FilterGroup("any", this);
+		this.add(group, position);
+	}
+	this.add = function(filter, position) {
+		if (position == undefined) {
+			position = this.filters.length;
+		}
+		if (position instanceof Filter || position instanceof FilterGroup) {
+			position = this.filters.indexOf(position) + 1;
+			if (position == 0) {
+				position = this.filters.length;
+			}
+		}
+		if (filter instanceof Array) {
+			for (id in filter) {
+				this.add(filter[id]);
+			}
+		}
+		else {
+			filter.owner = this;
+			this.filters.splice(position, 0, filter);
+		}
+		this.redisplay();
+	}
+	this.check = function(match) {
+		if (this.filters.length == 0) {
+			return true;
+		}
+		switch (this.grouptype) {
+			case "all":
+				for (var i in this.filters) {
+					if (!this.filters[i].check(match)) {
+						return false;
+					}
+				}
+				return true;
+				break;
+			case "any":
+				for (var i in this.filters) {
+					if (this.filters[i].check(match)) {
+						return true;
+					}
+				}
+				return false;
+				break;
+			case "none":
+				for (var i in this.filters) {
+					if (this.filters[i].check(match)) {
+						return false;
+					}
+				}
+				return true;
+				break;
+			default:
+				console.log("FilterGroup filter failed!  Couldn't identify group type, which was " + this.grouptype);
+				break;
+		}
+	}
+}
+
+function makeHTMLSelect(options, optionNames, selected) {
+	var select = document.createElement("select");
+	for (var id in options) {
+		var option = document.createElement("option");
+		option.innerHTML = optionNames[id];
+		option.value = options[id];
+		if (options[id] == selected) {
+			option.selected = true;
+		}
+		select.appendChild(option);
+	}
+	return select;
+}
+
+function makeHTMLSpan(text) {
+	var span = document.createElement("span");
+	span.innerHTML = text;
+	return span;
+}
+
+function makeHTMLButton(text, onclick) {
+	var button = document.createElement("input");
+	button.type = "button";
+	button.value = text;
+	button.onclick = onclick;
+	return button;
 }
